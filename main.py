@@ -1,6 +1,6 @@
 from env import *
 import pysftp
-from subprocess import check_output
+import os
 import pymysql
 
 def get_file():
@@ -18,26 +18,25 @@ def get_file():
           sftp.get(REMOTE_FILE, "out/output.sql")         
           print(f"Download complete.")
 
-def clean_database():
+def create_database():
   '''
-  Clean the actual mysql database and dump the new
+  Create the database if not exists
   '''
   db = pymysql.connect(LOCAL_DB_HOST, LOCAL_DB_USER, LOCAL_DB_PASSWORD)
   cursor = db.cursor()
 
-  # Drop the entire database and create new
-  drop = cursor.execute("DROP DATABASE "+ LOCAL_DB_NAME +";")
-  drop += cursor.execute("CREATE DATABASE IF NOT EXISTS "+ LOCAL_DB_NAME +";")
+  drop = cursor.execute("CREATE DATABASE IF NOT EXISTS "+ LOCAL_DB_NAME +";")
   
   db.close()
 
+  
 def dump():
-  check_output("dir C:", shell=True)
+  os.system('cmd /k "mysqldump.lnk --add-drop-database '+ LOCAL_DB_NAME +' < out/output.sql"') 
 
 
 def main():
   get_file()
-  clean_database()
+  create_database()
   dump()
 
 main()
