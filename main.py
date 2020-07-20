@@ -60,7 +60,8 @@ def reload_database():
 def dump():
   # Remove .lnk if your Windows terminal recognize it in a different way.
   try:
-    os.system('cmd /k "mysqldump.lnk --add-drop-database '+ LOCAL_DB_NAME +' < out/output.sql"') 
+    os.system('cmd /k "mysqldump.lnk --add-drop-database --host="'+LOCAL_DB_HOST+'" --user="'+LOCAL_DB_USER+'" --password="'+LOCAL_DB_PASSWORD+'" '+ LOCAL_DB_NAME +' < out/output.sql"') 
+    logging.info("Database dumped")
     return True
   except Exception:
     logging.error("Cannot dump the database into MySQL. Check if your mysqldump work properly from the command line inside this folder")
