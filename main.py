@@ -60,7 +60,12 @@ def reload_database():
 def dump():
   # Remove .lnk if your Windows terminal recognize it in a different way.
   try:
-    os.system('cmd /k "mysqldump.lnk --add-drop-database --host="'+LOCAL_DB_HOST+'" --user="'+LOCAL_DB_USER+'" --password="'+LOCAL_DB_PASSWORD+'" '+ LOCAL_DB_NAME +' < out/output.sql"') 
+    if(SYSTEM == 'linux'):
+      os.system('mysql --host="'+LOCAL_DB_HOST+'" --user="'+LOCAL_DB_USER+'" --password="'+LOCAL_DB_PASSWORD+'" '+ LOCAL_DB_NAME +' < out/output.sql') 
+      #logging.info('mysql --host="'+LOCAL_DB_HOST+'" --user="'+LOCAL_DB_USER+'" --password="'+LOCAL_DB_PASSWORD+'" '+ LOCAL_DB_NAME +' < out/output.sql')
+    else:  #Should be windows
+      os.system('cmd /k "mysql.lnk --host="'+LOCAL_DB_HOST+'" --user="'+LOCAL_DB_USER+'" --password="'+LOCAL_DB_PASSWORD+'" '+ LOCAL_DB_NAME +' < out/output.sql"') 
+
     logging.info("Database dumped")
     return True
   except Exception:
@@ -72,10 +77,11 @@ def main():
   logging.basicConfig(filename='log/'+ datetime.today().strftime('%Y%m%d_%H%M%S') +'.log', filemode='w', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%Y%m%d %H:%M:%S', level=logging.INFO)
   logging.info("Running...")
   
-  if not get_file() or not reload_database() or not dump(): 
+  if not reload_database() or not dump(): 
     print("Error during the process. Check the log files.")
     return
   
   logging.info("The process finished with no errors")
 
-main()
+if __name__ == "__main__":
+  main()

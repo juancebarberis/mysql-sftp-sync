@@ -1,3 +1,5 @@
+SYSTEM = "windows"
+
 HOST = "ftp.example.com"
 PORT = "22"
 USER = "user"
